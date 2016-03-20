@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TurnTheBlockUntilItRocks</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { width: 100%; height: 100% }
+    </style>
+</head>
+<body>
+<script src="bower_components/three.js/three.min.js"></script>
+<script src="bower_components/threex.keyboardstate/threex.keyboardstate.js"></script>
+<script src="bower_components/dat.gui/dat.gui.js"></script>
+<script>
+    /*
+     * Global variables
+     */
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+
+    var backgroundColor = 0xDDDDDD;
+    var primaryColor = 0xDE8D00;
+    var cubeInitColor = "#DE8D00";
+
+    var gui;
+    var keyboard = new THREEx.KeyboardState();
+    var clock = new THREE.Clock();
+
+    /*
+     * Global EventListener
+     */
+    window.addEventListener('resize', function () {
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+
+        renderer.setSize(windowWidth, windowHeight);
+        camera.aspect = windowWidth / windowHeight;
+        camera.updateProjectionMatrix();
+    });
+
+    var scene = new THREE.Scene();
+    var ambientLight = new THREE.AmbientLight(0x000000);
+    scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff);
+    directionalLight.position.set(1, 1, 1).normalize();
+    scene.add(directionalLight);
+
+    var camera = new THREE.PerspectiveCamera(
+            75,
+            windowWidth / windowHeight,
+            0.1,
+            1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(windowWidth, windowHeight);
+    renderer.setClearColor(backgroundColor, 1);
+    document.body.appendChild(renderer.domElement);
+
+    gui = new dat.GUI();
+    parameters = {
+        x: 0, y: 0,
+        color: cubeInitColor
+    };
+
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+
+    var material = new THREE.MeshPhongMaterial(
+            {
+                color: 0x000000,
+                specular: 0x000000,
+                shininess: 30,
+                shading: THREE.FlatShading
+            });
+    // set color based on parameters value
+    material.color.setHex(parameters.color.replace("#", "0x"));
+
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    var folder1 = gui.addFolder('Rotation');
+    var cubeRotX = folder1.add(parameters, 'x').min(-100).max(100).step(1).listen();
+    var cubeRotY = folder1.add(parameters, 'y').min(-100).max(100).step(1).listen();
+    folder1.open();
+
+    cubeRotX.onChange(function (value) {
+        cube.rotation.x = value;
+    });
+    cubeRotY.onChange(function (value) {
+        cube.rotation.y = value;
+    });
+
+    var cubeColor = gui.addColor(parameters, 'color').name('Color').listen();
+    cubeColor.onChange(function (value) {
+        cube.material.color.setHex(value.replace("#", "0x"));
+    });
+
+    gui.open();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        render();
+        update();
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+    }
+
+    function update() {
+        var rotationValue = 0.07;
+        // rotate
+        if (keyboard.pressed("up")) {
+            cube.rotation.x += rotationValue;
+        }
+        if (keyboard.pressed("down")) {
+            cube.rotation.x -= rotationValue;
+        }
+        if (keyboard.pressed("left")) {
+            cube.rotation.y += rotationValue;
+        }
+        if (keyboard.pressed("right")) {
+            cube.rotation.y -= rotationValue;
+        }
+
+        parameters.x = cube.rotation.x;
+        parameters.y = cube.rotation.y;
+    }
+
+    animate();
+</script>
+</body>
+</html>

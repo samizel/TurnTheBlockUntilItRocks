@@ -1,0 +1,23 @@
+{
+  "name": "TurnTheBlockUntilItRocks",
+  "homepage": "https://github.com/samizel/TurnTheBlockUntilItRocks",
+  "authors": [
+    "samizel <samizel@gmail.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "three.js": "^0.75.0",
+    "threex.keyboardstate": "*",
+    "dat.gui": "*"
+  }
+}
