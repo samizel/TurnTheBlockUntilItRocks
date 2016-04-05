@@ -17,7 +17,6 @@
   ],
   "dependencies": {
     "three.js": "^0.75.0",
-    "threex.keyboardstate": "*",
     "dat.gui": "*"
   }
 }
